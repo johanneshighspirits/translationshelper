@@ -3,16 +3,15 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import { exec, spawn } from "child_process";
-
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+import { spawn } from "child_process";
 
 const keyRegex = /t\((\'|\")([\w\.]*)(\'|\")\)/i;
 
+// This method is called when your extension is activated
+// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand(
-    "translationshelper.appendToFile",
+    "translationshelper.appendNewTranslation",
     async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
