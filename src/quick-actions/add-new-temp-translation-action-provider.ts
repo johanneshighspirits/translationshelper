@@ -12,12 +12,15 @@ export class AddTempTranslationActionProvider
     const actions: vscode.CodeAction[] = [];
 
     for (const diagnostic of context.diagnostics) {
-      if (diagnostic.message.includes("is not assignable to")) {
+      if (
+        diagnostic.message.includes(
+          `"' is not assignable to parameter of type '"`
+        )
+      ) {
         const textInRange = document.getText(diagnostic.range);
-        vscode.window.showInformationMessage(textInRange);
 
         const fix = new vscode.CodeAction(
-          `💡 Add new temporary translation`,
+          `💡 Add new temporary translation for ${textInRange}`,
           vscode.CodeActionKind.QuickFix
         );
         fix.diagnostics = [diagnostic];
