@@ -16,6 +16,6 @@ This will create a \*.vsix file
 Install in vscode:
 
 ```bash
-# Make sure the version nr matches.   vvvvv
-code --install-extension my-extension-0.0.2.vsix
+# Make sure the version nr matches.         vvvvv
+code --install-extension translationshelper-0.0.3
 ```
