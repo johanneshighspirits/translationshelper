@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { translationKeyRegex } from "../commands/add-new-temp-translation";
 
 export class AddTempTranslationActionProvider
   implements vscode.CodeActionProvider
@@ -18,20 +19,33 @@ export class AddTempTranslationActionProvider
         )
       ) {
         const textInRange = document.getText(diagnostic.range);
-
-        const fix = new vscode.CodeAction(
-          `💡 Add new temporary translation for ${textInRange}`,
+        if (!translationKeyRegex.test(textInRange)) {
+          return;
+        }
+        const addTempTranslationFix = new vscode.CodeAction(
+          `Add new temporary translation for ${textInRange}`,
           vscode.CodeActionKind.QuickFix
         );
-        fix.diagnostics = [diagnostic];
+        addTempTranslationFix.diagnostics = [diagnostic];
 
-        fix.command = {
+        addTempTranslationFix.command = {
           title: "Add new temporary translation",
           command: "translationshelper.appendNewTranslation",
           arguments: [document.uri, range.start],
         };
+        const runTranslationsFix = new vscode.CodeAction(
+          "Update translations (npm run translations)",
+          vscode.CodeActionKind.QuickFix
+        );
+        runTranslationsFix.diagnostics = [diagnostic];
 
-        actions.push(fix);
+        runTranslationsFix.command = {
+          title: "Fetch latest translations and bundle locally",
+          command: "translationshelper.bundleTranslations",
+          arguments: [],
+        };
+
+        actions.push(addTempTranslationFix, runTranslationsFix);
       }
     }
 

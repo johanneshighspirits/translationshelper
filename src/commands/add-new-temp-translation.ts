@@ -3,7 +3,8 @@ import fs from "fs";
 import * as vscode from "vscode";
 import { spawn } from "child_process";
 
-const keyRegex = /t\((\'|\")([\w\.]*)(\'|\")\)/i;
+export const translationFunctionRegex = /t\((\'|\")([\w\.]*)(\'|\")\)/i;
+export const translationKeyRegex = /(\'|\")([\w\.]*)(\'|\")/i;
 
 export const addNewTempTranslation = async () => {
   const editor = vscode.window.activeTextEditor;
@@ -14,14 +15,16 @@ export const addNewTempTranslation = async () => {
 
   const selectedKeyRange = editor.document.getWordRangeAtPosition(
     editor.selection.start,
-    keyRegex
+    translationFunctionRegex
   );
   if (!selectedKeyRange?.isSingleLine) {
     vscode.window.showWarningMessage("No translation key selected");
     return;
   }
 
-  const key = keyRegex.exec(editor.document.getText(selectedKeyRange))?.at(2);
+  const key = translationFunctionRegex
+    .exec(editor.document.getText(selectedKeyRange))
+    ?.at(2);
 
   if (!key) {
     vscode.window.showWarningMessage("No translation key found");
@@ -62,6 +65,11 @@ export const addNewTempTranslation = async () => {
     vscode.window.showInformationMessage("Updating translations...");
     await runNpmScript("translations");
   }
+};
+
+export const runNpmTranslations = async () => {
+  vscode.window.showInformationMessage("Updating translations...");
+  await runNpmScript("translations");
 };
 
 const saveCurrentFile = async () => {
